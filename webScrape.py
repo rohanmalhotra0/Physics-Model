@@ -35,7 +35,7 @@ df["MarketCap"] = df["close"] * SHARES_OUTSTANDING
 
 
 # SMA
-for window in [10, 20, 30, 50]:
+for window in [10, 20, 30, 50, 200]:
     df[f"SMA{window}"] = df["close"].rolling(window=window).mean()
 
 # MACD
@@ -53,7 +53,7 @@ def compute_rsi(data, window):
     return 100 - (100 / (1 + rs))
 
 # RSI for multiple windows
-for window in [10, 20, 30, 50]:
+for window in [10, 20, 30, 50, 200]:
     df[f"RSI{window}"] = compute_rsi(df["close"], window)
 
 # Cleanup
