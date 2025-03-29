@@ -3,7 +3,7 @@ import pandas as pd
 
 
 API_KEY = "G1fpi573K1CupUjoypEIFEEyKFpkwUjw" 
-TICKER = "SPY"
+TICKER = "SPY" 
 START_DATE = "2025-01-01"
 END_DATE = "2025-06-13"
 FILENAME = "spy_daily_data.xlsx"
@@ -61,4 +61,4 @@ df.drop(columns=["EMA12", "EMA26"], inplace=True)
 
 
 df.to_excel(FILENAME, index=False)
-print(f"Exported {len(df)} rows to {FILENAME}")
+print(f"Exported {len(df)} rows to {FILENAME}") 

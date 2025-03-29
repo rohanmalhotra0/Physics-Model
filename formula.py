@@ -1,9 +1,17 @@
-# formula.py
 import pandas as pd
+import alpaca_trade_api as tradeapi
+
+# Alpaca Credentials
+api_key = "PK0OYR5V8WPMEL0794SS"
+secret_key = "Os8X7hc4nsnF6YpP15gnUifRgdiwpVYplMkWiKeP"
+paper = True
+BASE_URL = "https://paper-api.alpaca.markets"  # use the paper trading URL
+
+api = tradeapi.REST(api_key, secret_key, BASE_URL)
 
 def get_trade_decision():
     df = pd.read_excel("spy_daily_data.xlsx")
-    required_cols = ["close", "SMA50", "SMA30", "MACD", "MACD9", "RSI10", "RSI50"]
+    required_cols = ["close", "SMA50", "SMA30", "MACD", "MACD9", "RSI10", "RSI50", "SMA200"]
 
     missing_cols = [col for col in required_cols if col not in df.columns]
     if missing_cols:
@@ -17,7 +25,7 @@ def get_trade_decision():
 
     numBuy, numSell = 0, 0
 
-    if latest["close"] < latest.get("SMA200", float('inf')):
+    if latest["close"] < latest["SMA200"]:
         numBuy += 2
     else:
         numSell += 1
@@ -49,16 +57,27 @@ def get_trade_decision():
 
     confidence = abs(numBuy - numSell) / max((numBuy + numSell), 1)
 
+    account = api.get_account()
+    buying_power = float(account.buying_power)
+
+    # Determine trade size based on confidence
+    trade_fraction = min(confidence, 1)  # cap at 100% of buying power
+
     if numBuy > numSell:
         action = "BUY"
+        trade_amount = buying_power * trade_fraction
     elif numSell > numBuy:
         action = "SELL"
+        position = api.get_position("SPY") if api.list_positions() else None
+        trade_amount = float(position.market_value) * trade_fraction if position else 0
     else:
         action = "HOLD"
+        trade_amount = 0
 
     return {
         "action": action,
         "numBuy": numBuy,
         "numSell": numSell,
-        "confidence": confidence
+        "confidence": confidence,
+        "trade_amount": trade_amount
     }
