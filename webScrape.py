@@ -2,7 +2,7 @@ from polygon import RESTClient
 import pandas as pd
 
 
-API_KEY = "G1fpi573K1CupUjoypEIFEEyKFpkwUjw" 
+API_KEY = "" 
 TICKER = "SPY" 
 START_DATE = "2025-01-01"
 END_DATE = "2025-06-13"
