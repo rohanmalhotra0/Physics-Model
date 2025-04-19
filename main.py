@@ -45,3 +45,24 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"❌ Error submitting order: {e}")
     
+    # Optional: Wait for a few seconds before checking the order status
+    time.sleep(5)
+    # Step 4: Check order status
+    try:
+        order_status = trade_client.get_order(order_response.id)
+        print(f"Order status: {order_status.status}")
+    except Exception as e:
+        print(f"❌ Error fetching order status: {e}")
+    # Optional: Check if the order was filled
+    if order_status.status == "filled":
+        print("Order was filled successfully.")
+    else:
+        print("Order was not filled.")
+    # Optional: Check the current position
+    try:
+        position = trade_client.get_position(symbol)
+        print(f"Current position: {position.qty} shares of {symbol}")
+    except Exception as e:
+        print(f"❌ Error fetching position: {e}")
+        
+    
